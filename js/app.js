@@ -1,0 +1,13 @@
+
+const fmt=n=>(n===null||n===undefined||Number.isNaN(Number(n)))?'—':Number(n).toLocaleString('tr-TR');
+const slug=s=>(s||'').toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'x';
+async function getJSON(p){const r=await fetch(p); if(!r.ok) throw Error(p); return r.json()}
+function nav(){const p=location.pathname.split('/').pop()||'index.html';document.querySelectorAll('.nav a').forEach(a=>{if(a.getAttribute('href')===p)a.classList.add('active')})}
+function statCards(el,items){el.innerHTML=items.map(x=>`<div class="card stat"><div class="num">${x.v}</div><div class="label">${x.k}</div></div>`).join('')}
+function table(el,heads,rows){el.innerHTML=`<table><thead><tr>${heads.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table>`}
+function bars(el,obj){const e=Object.entries(obj||{});const m=Math.max(...e.map(x=>+x[1]),1);el.innerHTML=e.map(([k,v])=>`<div class="bar" style="height:${Math.max(6,(v/m)*220)}px"><span>${k}<br>${fmt(v)}</span></div>`).join('')}
+function rowSchool(s){return `<tr><td><a class="pill" href="okul-detay.html?okul=${encodeURIComponent(s.name)}">${s.name}</a></td><td>${s.district}</td><td>${s.type||'—'}</td><td>${fmt(s.total2025)}</td><td>${fmt(s.total)}</td><td>${fmt(s.weightedRank)}</td><td>%${s.firstGraduate?.firstRate??'—'} / %${s.firstGraduate?.graduateRate??'—'}</td></tr>`}
+function rowDistrict(d){return `<tr><td><a class="pill" href="ilce-detay.html?ilce=${encodeURIComponent(d.name)}">${d.name}</a></td><td>${fmt(d.schoolCount)}</td><td>${fmt(d.total)}</td><td>${fmt(d.weightedRank)}</td><td>%${d.firstGraduate?.firstRate??'—'} / %${d.firstGraduate?.graduateRate??'—'}</td></tr>`}
+function downloadCSV(filename,rows){const csv=rows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv'}));a.download=filename;a.click()}
+function fillSchoolPicker(districtSel,schoolSel,schools){const ds=[...new Set(schools.map(s=>s.district))].sort((a,b)=>a.localeCompare(b,'tr'));districtSel.innerHTML='<option value="">İlçe seç</option>'+ds.map(d=>`<option>${d}</option>`).join('');function refill(){const d=districtSel.value;let arr=schools.filter(s=>!d||s.district===d).sort((a,b)=>a.name.localeCompare(b.name,'tr'));schoolSel.innerHTML='<option value="">Okul seç</option>'+arr.map(s=>`<option value="${s.name}">${s.name}</option>`).join('')}districtSel.onchange=refill;refill()}
+window.addEventListener('DOMContentLoaded',nav);

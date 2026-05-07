@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Okul Detay</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+:root{--navy:#0f172a;--muted:#64748b;--line:#dbe3ef;--bg:#f4f7fb}
+.school-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;align-items:stretch;margin:18px 0}.school-title-card{background:linear-gradient(135deg,#0f172a,#1d4ed8);color:white;border-radius:30px;padding:28px;box-shadow:0 18px 35px rgba(15,23,42,.18)}.school-title-card h1{color:white;margin:0 0 10px}.school-title-card p{color:#dbeafe;margin:0}.quick-facts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.fact{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.06)}.fact .num{font-size:34px;font-weight:950;letter-spacing:-1px}.fact .label{font-size:15px;color:#64748b;margin-top:5px}.school-accordion{margin:18px 0}.school-accordion>summary{cursor:pointer;list-style:none;background:#0f172a;color:white;border-radius:24px;padding:20px 24px;font-size:24px;font-weight:950;box-shadow:0 14px 30px rgba(15,23,42,.12)}.school-accordion>summary::-webkit-details-marker{display:none}.school-accordion>summary:after{content:'↓';float:right}.school-accordion[open]>summary:after{content:'↑'}.school-accordion .inner{background:white;border:1px solid var(--line);border-radius:28px;padding:22px;margin-top:12px;box-shadow:0 14px 35px rgba(15,23,42,.05)}
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}.toolbar select{min-width:230px}.filter-summary{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;margin-bottom:16px}.metric{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px}.metric b{font-size:28px;display:block}.metric span{color:#64748b}.visual-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0}.viz-card{border:1px solid var(--line);border-radius:24px;padding:18px;background:#f8fafc}.colored-trend{min-height:300px;padding-top:80px;gap:28px}.colored-trend .bar:nth-child(1){background:linear-gradient(180deg,#60a5fa,#2563eb)}.colored-trend .bar:nth-child(2){background:linear-gradient(180deg,#4ade80,#16a34a)}.colored-trend .bar:nth-child(3){background:linear-gradient(180deg,#f87171,#dc2626)}.colored-trend .bar:nth-child(4){background:linear-gradient(180deg,#a78bfa,#7c3aed)}.colored-trend .bar span{top:-62px;font-size:18px;line-height:1.15}.program-bars{display:grid;gap:10px}.program-bar{position:relative;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;min-height:44px;border:1px solid var(--line);border-radius:16px;padding:10px 12px;overflow:hidden;background:#fff}.program-bar:before{content:'';position:absolute;inset:0 auto 0 0;width:var(--w);background:linear-gradient(90deg,var(--c),rgba(255,255,255,.25));opacity:.75}.program-bar b,.program-bar span{position:relative;z-index:1}.program-bar span{font-weight:950}.fg-layout{display:grid;grid-template-columns:210px 1fr;gap:22px;align-items:center}.fg-pie{width:180px;height:180px;border-radius:999px;display:grid;place-items:center;margin:auto;box-shadow:inset 0 0 0 20px rgba(255,255,255,.85)}.fg-pie b{text-align:center;font-size:22px}.fg-bars{height:200px;display:flex;align-items:end;gap:24px}.fg-bars div{flex:1;border-radius:18px 18px 8px 8px;position:relative;min-height:8px}.fg-bars span{position:absolute;left:0;right:0;top:-44px;text-align:center;font-weight:900;color:#334155}.record-table-wrap{overflow:auto;margin-top:14px}.record-table-wrap table{min-width:1080px}.rank-good{background:#dcfce7;color:#166534;border-radius:999px;padding:5px 9px;font-weight:900}.rank-mid{background:#fef3c7;color:#92400e;border-radius:999px;padding:5px 9px;font-weight:900}.rank-bad{background:#fee2e2;color:#991b1b;border-radius:999px;padding:5px 9px;font-weight:900}
+.year-score-list{display:grid;gap:16px}.year-block{border:1px solid var(--line);border-radius:22px;background:#f8fafc;padding:18px}.year-block h3{margin:0 0 12px;font-size:24px}.score-click-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.score-click{position:relative;border:0;border-radius:16px;background:white;min-height:58px;padding:10px 12px;text-align:left;font-weight:950;cursor:pointer;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line)}.score-click:before{content:'';position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--c);opacity:.86}.score-click b,.score-click span{position:relative;z-index:1}.score-click b{color:white}.score-click span{float:right;color:#0f172a;background:rgba(255,255,255,.8);border-radius:999px;padding:3px 8px}.fg-year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.fg-year-card{border:1px solid var(--line);border-radius:22px;background:#f8fafc;padding:16px}.fg-year-card h3{font-size:24px;margin:0 0 12px}.stack-bar{height:24px;border-radius:999px;overflow:hidden;display:flex;background:#e2e8f0;margin:12px 0}.stack-bar .first{background:var(--c)}.stack-bar .grad{background:#94a3b8}.mini-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mini-box{background:white;border:1px solid var(--line);border-radius:14px;padding:10px}.mini-box b{display:block;font-size:19px}.dev-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.dev-card{border:1px solid var(--line);border-radius:22px;background:#f8fafc;padding:16px}.dev-card h3{margin:0 0 10px}.dev-bars{display:grid;gap:9px}.dev-row{display:grid;grid-template-columns:54px 1fr 95px;align-items:center;gap:10px}.dev-track{height:22px;border-radius:999px;background:#e2e8f0;overflow:hidden}.dev-fill{height:100%;width:var(--w);background:var(--c)}.delta{font-weight:950;border-radius:999px;padding:5px 9px;display:inline-block}.up{background:#dcfce7;color:#166534}.down{background:#fee2e2;color:#991b1b}.same{background:#e2e8f0;color:#334155}.related-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.related-card{border:1px solid var(--line);background:#f8fafc;border-radius:22px;padding:18px}.related-card h3{margin:0 0 10px}.related-card a{font-weight:950;text-decoration:none}.related-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.related-stats div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px}.hint{color:#64748b}.pill{white-space:nowrap}@media(max-width:1100px){.visual-grid,.dev-grid,.related-grid{grid-template-columns:1fr}.score-click-row,.fg-year-grid{grid-template-columns:1fr 1fr}.filter-summary{grid-template-columns:1fr 1fr}}@media(max-width:700px){.school-hero,.quick-facts,.filter-summary,.visual-grid,.fg-layout,.score-click-row,.fg-year-grid,.dev-grid,.related-grid{grid-template-columns:1fr}.colored-trend{overflow:auto}.colored-trend .bar{min-width:110px}}
+
+.analysis-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0 24px}.analysis-tab{border:0;border-radius:999px;padding:13px 26px;font-weight:950;background:#fff;color:#64748b;box-shadow:0 8px 22px rgba(15,23,42,.10);cursor:pointer}.analysis-tab.active{background:#6366f1;color:#fff}.analysis-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin:10px 0 28px}.analysis-score-card{border:1px solid var(--line);border-top:5px solid var(--c);border-radius:22px;background:#f8fafc;padding:16px;box-shadow:0 10px 25px rgba(15,23,42,.06)}.analysis-score-card h3{margin:0 0 12px;color:#334155}.analysis-score-card .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.analysis-score-card .box{background:white;border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center}.analysis-score-card .box b{display:block;font-size:18px;color:#6366f1}.analysis-panels{display:grid;grid-template-columns:1fr 1fr;gap:20px}.analysis-chart{border:1px solid var(--line);border-radius:24px;background:#fff;padding:18px;box-shadow:0 14px 30px rgba(15,23,42,.06)}.analysis-chart h3{margin-top:0}.svg-chart{width:100%;height:300px;display:block}.chart-legend{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:8px;color:#64748b;font-weight:800}.legend-dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px}.analysis-result{margin-top:22px;border:1px solid var(--line);border-radius:20px;background:#fff;padding:18px}.analysis-result b{color:#047857}.dual-bars{height:280px;display:flex;align-items:end;gap:18px;border-left:2px solid #e2e8f0;border-bottom:2px solid #e2e8f0;padding:20px 20px 32px;margin-top:12px}.dual-year{flex:1;display:flex;align-items:end;gap:6px;position:relative;height:100%}.dual-year label{position:absolute;bottom:-28px;left:0;right:0;text-align:center;font-weight:800;color:#64748b}.dual-bar{flex:1;min-height:4px;border-radius:10px 10px 3px 3px;position:relative}.dual-bar span{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:900}.score-mini-bars{display:grid;gap:8px;margin-top:10px}.score-mini-row{display:grid;grid-template-columns:42px 1fr 72px;gap:8px;align-items:center}.score-mini-track{height:16px;border-radius:999px;background:#e2e8f0;overflow:hidden}.score-mini-fill{height:100%;background:var(--c);width:var(--w)}@media(max-width:1100px){.analysis-summary{grid-template-columns:1fr 1fr}.analysis-panels{grid-template-columns:1fr}}@media(max-width:700px){.analysis-summary{grid-template-columns:1fr}.dual-bars{overflow:auto}.dual-year{min-width:70px}}
+
+/* V16 mezuniyet karar ve ek analiz blokları */
+.decision-zone{background:linear-gradient(180deg,#ecfeff,#f0fdfa);border:1px solid #bae6fd;border-radius:28px;padding:22px;box-shadow:0 14px 35px rgba(20,184,166,.08)}
+.center-title{text-align:center;margin:6px 0 8px}.subnote{max-width:760px;margin:0 auto 22px;text-align:center;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:14px;padding:12px;color:#64748b;font-weight:700;font-style:italic}.decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.decision-card{background:white;border-radius:20px;border:1px solid var(--line);padding:18px;box-shadow:0 12px 28px rgba(15,23,42,.06)}.decision-card.good{border-left:5px solid #10b981}.decision-card.warn{border-left:5px solid #6366f1}.decision-card h3{margin:0 0 12px;color:#0f172a}.bullet-soft{display:flex;gap:10px;align-items:flex-start;background:#ecfdf5;border-radius:10px;padding:10px 12px;margin:8px 0;color:#064e3b;font-weight:800}.bullet-soft.bad{background:#eef2ff;color:#3730a3}.city-note{margin-top:18px;background:#cffafe;border-radius:16px;padding:14px;border-left:4px solid #38bdf8}.score-advice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}.score-advice-card{background:white;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 12px 28px rgba(15,23,42,.06)}.score-advice-card.win{background:#ecfdf5;border-color:#86efac}.score-advice-card.lose{background:#fff7ed;border-color:#fdba74}.score-advice-card h3{margin:0 0 10px}.winner-pill{display:inline-block;border-radius:999px;padding:8px 12px;color:white;font-weight:950;margin-bottom:12px}.rank-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.rank-compare div{background:rgba(255,255,255,.8);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}.rank-compare b{display:block;font-size:18px}.extra-analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.extra-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 12px 28px rgba(15,23,42,.06)}.distribution-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:#f8fafc;border-radius:14px;padding:12px;margin:10px 0}.split-track{height:18px;border-radius:999px;background:#e2e8f0;overflow:hidden;margin:12px 0}.split-track .a{height:100%;background:#6366f1;float:left}.split-track .b{height:100%;background:#10b981;float:left}.city-bars{display:grid;gap:12px}.city-bar-row b{display:block;margin-bottom:6px}.city-track{height:16px;background:#e2e8f0;border-radius:999px;overflow:hidden}.city-fill{height:100%;background:linear-gradient(90deg,#6366f1,#f59e0b)}.diversity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.diversity-box{background:#f8fafc;border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center}.diversity-box b{display:block;font-size:26px;color:#0f172a}.tag-cloud{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tag-chip{background:#e0f2fe;color:#0369a1;border-radius:999px;padding:6px 10px;font-weight:900}.analysis-note{color:#64748b;font-size:13px;margin-top:12px}.mini-table{width:100%;border-collapse:separate;border-spacing:0 8px}.mini-table td,.mini-table th{padding:10px;background:#f8fafc}.mini-table th{color:#64748b;text-align:left}.mini-table td:first-child,.mini-table th:first-child{border-radius:12px 0 0 12px}.mini-table td:last-child,.mini-table th:last-child{border-radius:0 12px 12px 0}@media(max-width:1100px){.decision-grid,.extra-analysis-grid{grid-template-columns:1fr}.score-advice-grid{grid-template-columns:1fr 1fr}.diversity-grid{grid-template-columns:1fr 1fr}}@media(max-width:700px){.score-advice-grid{grid-template-columns:1fr}.rank-compare{grid-template-columns:1fr}.diversity-grid{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="top"><div class="nav"><a class="brand" href="index.html">İzmir Lise Başarı Atlası</a><a href="index.html">Ana Sayfa</a><a href="okullar.html">Okullar</a><a href="ilceler.html">İlçeler</a><a href="lise-turleri.html">Lise Türleri</a><a href="karsilastir.html">Karşılaştır</a><a href="sampiyonlar.html">Şampiyonlar</a><a href="puan-turu-trendleri.html">Puan Türleri</a><a href="universite-haritasi.html">Üniversite Haritası</a><a href="program-populerligi.html">Programlar</a><a href="etiket-analizi.html">Etiketler</a><a href="siralama-araci.html">Sıralama Aracı</a></div></div>
+<main class="wrap">
+  <section class="school-hero">
+    <div class="school-title-card">
+      <span class="eyebrow" id="schoolType">Okul</span>
+      <h1 id="title">Okul Detay</h1>
+      <p id="sub"></p>
+    </div>
+    <div class="quick-facts" id="stats"></div>
+  </section>
+
+  <details class="school-accordion" open id="filterSection">
+    <summary>Okul içi yıl + puan türü filtresi</summary>
+    <div class="inner">
+      <p class="hint">Ana liste burasıdır. Yıl, puan türü ve sıralamaya göre program kayıtları yeniden sıralanır. Başarı sırası seçilince küçükten büyüğe gider.</p>
+      <div class="toolbar">
+        <select id="yearSel"></select>
+        <select id="scoreSel"><option value="">Tüm puan türleri</option></select>
+        <select id="sortSel"><option value="total">Yerleşen sayısına göre</option><option value="rank">Taban başarı sırası küçükten büyüğe</option><option value="best">En iyi taban sırasına göre</option></select>
+      </div>
+      <div class="filter-summary" id="filterStats"></div>
+      <div class="visual-grid">
+        <div class="viz-card"><h2>Puan türü dağılımı</h2><div id="scoreBars" class="program-bars"></div></div>
+        <div class="viz-card"><h2>İlk Sene / Mezun</h2><div id="filterFg"></div></div>
+      </div>
+      <h2>Filtrelenmiş program / üniversite kayıtları</h2>
+      <div id="placements" class="record-table-wrap"></div>
+    </div>
+  </details>
+
+  <details class="school-accordion" open>
+    <summary>Yıl yıl puan türü barları</summary>
+    <div class="inner">
+      <p class="hint">Butonlara tıkla: üstteki okul içi filtre otomatik o yıl ve puan türüne geçer.</p>
+      <div id="yearScoreCards" class="year-score-list"></div>
+    </div>
+  </details>
+
+  <details class="school-accordion" open>
+    <summary>Yıllara göre gelişim / gerileme</summary>
+    <div class="inner">
+      <p class="hint">Her puan türünde hem yerleşen sayısı hem de ağırlıklı taban başarı sırası aynı anda gösterilir. Başarı sırasında düşük değer daha iyidir.</p>
+      <div id="development"></div>
+    </div>
+  </details>
+
+  <details class="school-accordion" open>
+    <summary>4 yıllık toplam trend</summary>
+    <div class="inner"><div id="trend" class="chart colored-trend"></div></div>
+  </details>
+
+  <details class="school-accordion" open>
+    <summary>İlk Sene / Mezun yıllara göre</summary>
+    <div class="inner"><div id="fgYearVisual"></div></div>
+  </details>
+
+
+
+  <details class="school-accordion" open>
+    <summary>Mezuna bırakmalı mıyım? — detaylı analiz</summary>
+    <div class="inner decision-zone" id="gradDecision"></div>
+  </details>
+
+  <details class="school-accordion" open>
+    <summary>Puan türü analizi — İlk Sene vs Mezun</summary>
+    <div class="inner" id="scoreDecision"></div>
+  </details>
+
+  <details class="school-accordion" open>
+    <summary>İlk Sene vs Mezun — ek analizler</summary>
+    <div class="inner" id="extraGradAnalysis"></div>
+  </details>
+
+  <details class="school-accordion" open id="relatedSection">
+    <summary>Eski / yeni okul adı — birleşik sonuçlar</summary>
+    <div class="inner"><div id="relatedSchools"></div></div>
+  </details>
+</main>
+<div class="footer">Excel Toplam sütunu esaslı statik web projesi · İlk Sene / Mezun oranları ZIP kart verisinden eşleştirildi.</div>
+<script src="js/app.js"></script>
+<script>
+const scoreColors={"DİL":"#2563eb","EA":"#16a34a","SAY":"#dc2626","SÖZ":"#7c3aed","TYT":"#f97316","—":"#64748b"};
+const yearColors={"2022":"#2563eb","2023":"#16a34a","2024":"#dc2626","2025":"#7c3aed"};
+function norm(t){return String(t||'').toLocaleUpperCase('tr-TR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replaceAll('İ','I').replaceAll('Ş','S').replaceAll('Ğ','G').replaceAll('Ü','U').replaceAll('Ö','O').replaceAll('Ç','C').replace(/\s+/g,' ').trim()}
+function avgRank(rows){let t=0,w=0;rows.forEach(r=>{if(r[8]&&r[7]){t+=Number(r[8])*Number(r[7]);w+=Number(r[7]);}});return w?Math.round(t/w):null}
+function bestRank(rows){let vals=rows.map(r=>Number(r[8])).filter(Boolean);return vals.length?Math.min(...vals):null}
+function sumTotal(rows){return rows.reduce((a,r)=>a+(Number(r[7])||0),0)}
+function miniMetrics(el,items){el.innerHTML=items.map(x=>`<div class="metric"><b>${x.v}</b><span>${x.k}</span></div>`).join('')}
+function fgVisual(el,fg,total){const first=fg.first||0,grad=fg.graduate||0,all=fg.total||first+grad||total||1;const fp=all?Math.round(first*1000/all)/10:0;const gp=all?Math.round(grad*1000/all)/10:0;const max=Math.max(first,grad,1);el.innerHTML=`<div class="fg-layout"><div class="fg-pie" style="background:conic-gradient(#2563eb 0 ${fp}%,#94a3b8 ${fp}% 100%)"><b>%${fp}<br>İlk</b></div><div class="fg-bars"><div style="height:${Math.max(8,first/max*180)}px;background:#2563eb"><span>İlk<br>${fmt(first)}</span></div><div style="height:${Math.max(8,grad/max*180)}px;background:#94a3b8"><span>Mezun<br>${fmt(grad)}</span></div></div><p class="mini">İlk Sene: ${fmt(first)} · Mezun: ${fmt(grad)} · %${fp} / %${gp}</p></div>`}
+function filteredFg(s,year,total){let fg=s.firstGraduate||{};if(year && fg.byYear && fg.byYear[year]){let o=fg.byYear[year];return {first:o.firstYearCount||0,graduate:o.graduateCount||0,total:o.totalCount||0}}return {first:fg.first||0,graduate:fg.graduate||0,total:fg.total||total||0}}
+function scoreBarList(el,rows){let obj={};rows.forEach(r=>{let k=r[6]||'—';obj[k]=(obj[k]||0)+(Number(r[7])||0)});let arr=Object.entries(obj).sort((a,b)=>b[1]-a[1]);let max=Math.max(...arr.map(x=>x[1]),1);el.innerHTML=arr.length?arr.map(([k,v])=>`<div class="program-bar" style="--w:${Math.max(4,v/max*100)}%;--c:${scoreColors[k]||'#64748b'}"><b>${k}</b><span>${fmt(v)}</span></div>`).join(''):'<p>Bu filtrede kayıt yok.</p>'}
+function yearScoreCards(el,s){const ys=s.yearScore||{};const order=['DİL','EA','SAY','SÖZ','TYT'];el.innerHTML=Object.entries(ys).sort().map(([y,obj])=>{const max=Math.max(...Object.values(obj).map(Number),1);return `<div class="year-block"><h3 style="color:${yearColors[y]||'#0f172a'}">${y}</h3><div class="score-click-row">${order.filter(k=>obj[k]!==undefined).map(k=>`<button class="score-click" style="--w:${Math.max(8,Number(obj[k])/max*100)}%;--c:${scoreColors[k]||'#64748b'}" onclick="selectYearScore('${y}','${k}')"><b>${k}</b><span>${fmt(obj[k])}</span></button>`).join('')}</div></div>`}).join('')}
+function fgYearCards(el,s){const by=s.firstGraduate?.byYear||{};el.innerHTML=`<div class="fg-year-grid">${Object.entries(by).sort().map(([y,o])=>{const first=o.firstYearCount||0,grad=o.graduateCount||0,total=o.totalCount||first+grad||1;const fp=Math.round(first*1000/total)/10;const gp=Math.round(grad*1000/total)/10;const c=yearColors[y]||'#2563eb';return `<div class="fg-year-card"><h3 style="color:${c}">${y}</h3><div class="stack-bar"><div class="first" style="width:${fp}%;--c:${c}"></div><div class="grad" style="width:${gp}%"></div></div><div class="mini-row"><div class="mini-box"><b>${fmt(first)}</b>İlk Sene<br>%${fp}</div><div class="mini-box"><b>${fmt(grad)}</b>Mezun<br>%${gp}</div></div><div class="mini-box" style="margin-top:8px"><b>${fmt(total)}</b>Toplam</div></div>`}).join('')}</div>`}
+function sparkLine(points, color, invert=false){
+  const vals=points.map(p=>p.v).filter(v=>v!==null&&v!==undefined&&isFinite(v));
+  if(!vals.length) return '<p class="hint">Grafik için yeterli veri yok.</p>';
+  const min=Math.min(...vals), max=Math.max(...vals), range=(max-min)||1;
+  const w=520,h=250,pad=34;
+  const coords=points.map((p,i)=>{
+    const x=pad + (points.length===1?0:i*(w-2*pad)/(points.length-1));
+    let ratio=p.v==null?0:(p.v-min)/range;
+    const y=invert ? pad + ratio*(h-2*pad) : h-pad-ratio*(h-2*pad);
+    return {...p,x,y};
+  });
+  const path=coords.filter(p=>p.v!=null).map((p,i)=>(i?'L':'M')+p.x+' '+p.y).join(' ');
+  return `<svg class="svg-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="#e2e8f0" stroke-width="2"/>
+    <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${h-pad}" stroke="#e2e8f0" stroke-width="2"/>
+    ${[0,1,2,3,4].map(i=>`<line x1="${pad}" x2="${w-pad}" y1="${pad+i*(h-2*pad)/4}" y2="${pad+i*(h-2*pad)/4}" stroke="#f1f5f9"/>`).join('')}
+    <path d="${path}" fill="none" stroke="${color}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${coords.map(p=>p.v==null?'':`<circle cx="${p.x}" cy="${p.y}" r="6" fill="${color}"/><text x="${p.x}" y="${h-8}" text-anchor="middle" font-size="13" font-weight="800" fill="#64748b">${p.yLabel}</text>`).join('')}
+  </svg>`;
+}
+function devSection(el,rows,school){
+  const scores=['SAY','SÖZ','EA','DİL','TYT'];
+  const years=[...new Set(rows.map(r=>r[0]))].sort();
+  const fgByYear=school.firstGraduate?.byYear||{};
+  const scoreSummary=scores.map(sc=>{
+    const rr=rows.filter(r=>r[6]===sc);
+    const total=sumTotal(rr), rank=avgRank(rr);
+    return {sc,total,rank,color:scoreColors[sc]||'#6366f1'};
+  });
+  el.innerHTML=`
+    <div class="analysis-summary">
+      ${scoreSummary.map(x=>`<div class="analysis-score-card" style="--c:${x.color}"><h3>${x.sc}</h3><div class="two"><div class="box"><small>Yerleşen</small><b>${fmt(x.total)}</b></div><div class="box"><small>Ort. sıra</small><b>${fmt(x.rank)}</b></div></div></div>`).join('')}
+    </div>
+    <div class="analysis-tabs">${scores.map((sc,i)=>`<button class="analysis-tab ${i===0?'active':''}" data-score="${sc}">${sc}</button>`).join('')}</div>
+    <div id="analysisDetail"></div>`;
+  const detail=el.querySelector('#analysisDetail');
+  function render(sc){
+    el.querySelectorAll('.analysis-tab').forEach(b=>b.classList.toggle('active',b.dataset.score===sc));
+    const color=scoreColors[sc]||'#6366f1';
+    const data=years.map(y=>{const rr=rows.filter(r=>r[0]===y&&r[6]===sc);return {y,total:sumTotal(rr),rank:avgRank(rr)}});
+    const totalMax=Math.max(...data.map(d=>d.total),1);
+    const firstYear=data.find(d=>d.total||d.rank);
+    const lastYear=[...data].reverse().find(d=>d.total||d.rank);
+    const deltaTotal=firstYear&&lastYear?(lastYear.total-firstYear.total):0;
+    const rankChange=(firstYear&&lastYear&&firstYear.rank&&lastYear.rank)?firstYear.rank-lastYear.rank:null;
+    const best=data.filter(d=>d.rank).sort((a,b)=>a.rank-b.rank)[0];
+    const worst=data.filter(d=>d.rank).sort((a,b)=>b.rank-a.rank)[0];
+    const fgMax=Math.max(...years.flatMap(y=>[fgByYear[y]?.firstYearCount||0,fgByYear[y]?.graduateCount||0]),1);
+    detail.innerHTML=`
+      <div class="analysis-panels">
+        <div class="analysis-chart"><h3><span class="pill" style="background:${color};color:white">${sc}</span> Ortalama taban başarı sırası</h3>${sparkLine(data.map(d=>({yLabel:d.y,v:d.rank})),color,true)}<p class="hint">Düşük başarı sırası daha iyi olduğu için çizgi aşağı indikçe performans iyileşir.</p></div>
+        <div class="analysis-chart"><h3><span class="pill" style="background:${color};color:white">${sc}</span> Yerleşen öğrenci sayısı</h3><div class="dual-bars">${data.map(d=>`<div class="dual-year"><div class="dual-bar" style="height:${Math.max(4,d.total/totalMax*235)}px;background:${color}"><span>${fmt(d.total)}</span></div><label>${d.y}</label></div>`).join('')}</div></div>
+      </div>
+      <div class="analysis-panels" style="margin-top:20px">
+        <div class="analysis-chart"><h3>İlk Sene / Mezun öğrenci sayısı</h3><div class="dual-bars">${years.map(y=>{const f=fgByYear[y]?.firstYearCount||0,g=fgByYear[y]?.graduateCount||0;return `<div class="dual-year"><div class="dual-bar" style="height:${Math.max(4,f/fgMax*235)}px;background:#6366f1"><span>${fmt(f)}</span></div><div class="dual-bar" style="height:${Math.max(4,g/fgMax*235)}px;background:#10b981"><span>${fmt(g)}</span></div><label>${y}</label></div>`}).join('')}</div><div class="chart-legend"><span><i class="legend-dot" style="background:#6366f1"></i>İlk Sene</span><span><i class="legend-dot" style="background:#10b981"></i>Mezun</span></div></div>
+        <div class="analysis-chart"><h3>Yıl bazlı kısa özet</h3><div class="score-mini-bars">${data.map(d=>`<div class="score-mini-row"><b>${d.y}</b><div class="score-mini-track"><div class="score-mini-fill" style="--c:${color};--w:${Math.max(3,d.total/totalMax*100)}%"></div></div><b>${fmt(d.total)}</b></div>`).join('')}</div><br><b>En iyi ortalama sıra:</b> ${best?`${best.y} · ${fmt(best.rank)}`:'—'}<br><b>En zayıf ortalama sıra:</b> ${worst?`${worst.y} · ${fmt(worst.rank)}`:'—'}</div>
+      </div>
+      <div class="analysis-result"><h3>Analiz Sonucu</h3><p><b>${sc}</b> puan türünde yerleşen sayısı ${firstYear?firstYear.y:'ilk yıl'} → ${lastYear?lastYear.y:'son yıl'} arasında <b>${deltaTotal>0?'arttı':deltaTotal<0?'azaldı':'değişmedi'}</b> (${deltaTotal>0?'+':''}${fmt(deltaTotal)}). ${rankChange!==null?`Ortalama başarı sırası <b>${rankChange>0?'iyileşti':'geriledi'}</b>; değişim ${fmt(Math.abs(rankChange))} sıra.`:'Başarı sırası karşılaştırması için yeterli veri yok.'}</p><p class="hint">Not: İlk Sene / Mezun ayrımı okulun kart verisinden gelir; Excel program satırlarında ayrı öğrenci listesi olmadığı için bu ayrım puan türüne bölünmez, yıl bazında okul toplamı olarak gösterilir.</p></div>`;
+  }
+  el.querySelectorAll('.analysis-tab').forEach(b=>b.onclick=()=>render(b.dataset.score));
+  render(scores[0]);
+}
+
+function yearlyScoreRanks(rows){
+  const out={};
+  rows.forEach(r=>{const y=String(r[0]), sc=r[6]||'—'; out[y]=out[y]||{}; out[y][sc]=out[y][sc]||[]; out[y][sc].push(r);});
+  const ranks={};
+  Object.entries(out).forEach(([y,obj])=>{ranks[y]={}; Object.entries(obj).forEach(([sc,rr])=>{ranks[y][sc]={rank:avgRank(rr),total:sumTotal(rr)}})});
+  return ranks;
+}
+function scoreGraduateComparison(rows,school){
+  const scores=['SAY','EA','SÖZ','DİL','TYT'];
+  const byRank=yearlyScoreRanks(rows);
+  const fg=school.firstGraduate?.byYear||{};
+  return scores.map(sc=>{
+    let firstW=0,firstT=0,gradW=0,gradT=0,total=0;
+    Object.keys(byRank).forEach(y=>{
+      const yr=byRank[y][sc]; if(!yr||!yr.rank) return;
+      const f=Number(fg[y]?.firstYearCount)||0, g=Number(fg[y]?.graduateCount)||0;
+      firstW+=yr.rank*f; firstT+=f; gradW+=yr.rank*g; gradT+=g; total+=yr.total||0;
+    });
+    const firstRank=firstT?Math.round(firstW/firstT):null;
+    const gradRank=gradT?Math.round(gradW/gradT):null;
+    const diff=(firstRank&&gradRank)?Math.abs(firstRank-gradRank):null;
+    const winner=firstRank&&gradRank?(firstRank<gradRank?'ilk':'mezun'):null;
+    return {sc,total,firstRank,gradRank,diff,winner,color:scoreColors[sc]||'#6366f1'};
+  }).filter(x=>x.total||x.firstRank||x.gradRank);
+}
+function renderGradDecision(el,rows,school){
+  const comps=scoreGraduateComparison(rows,school);
+  const firstWins=comps.filter(x=>x.winner==='ilk');
+  const gradWins=comps.filter(x=>x.winner==='mezun');
+  const bestGrad=gradWins.sort((a,b)=>(b.diff||0)-(a.diff||0))[0];
+  const bestFirst=firstWins.sort((a,b)=>(b.diff||0)-(a.diff||0))[0];
+  const fg=school.firstGraduate||{};
+  const total=(fg.first||0)+(fg.graduate||0)||1;
+  const firstPct=Math.round((fg.first||0)*1000/total)/10;
+  const gradPct=Math.round((fg.graduate||0)*1000/total)/10;
+  el.innerHTML=`
+    <h2 class="center-title">🎯 Mezuna Bırakmalı Mıyım?</h2>
+    <div class="subnote">${school.displayName||school.name} için son 4 yıl yerleşme, başarı sırası ve İlk Sene / Mezun oranlarının birlikte yorumu.</div>
+    <div class="decision-grid">
+      <div class="decision-card good"><h3>✅ Mezuna bırakmanın avantajlı göründüğü alanlar</h3>
+        ${bestGrad?`<div class="bullet-soft">${bestGrad.sc} puan türünde mezunlar yaklaşık <b>${fmt(bestGrad.diff)}</b> sıra daha avantajlı görünüyor.</div>`:'<div class="bullet-soft">Bu okulda puan türü bazında mezunların açık üstün olduğu güçlü bir sinyal yok.</div>'}
+        <div class="bullet-soft">Mezun yerleşen oranı: <b>%${gradPct}</b> · Mezun yerleşen: <b>${fmt(fg.graduate||0)}</b></div>
+      </div>
+      <div class="decision-card warn"><h3>🚀 İlk senede yerleşmenin avantajlı göründüğü alanlar</h3>
+        ${firstWins.length?firstWins.map(x=>`<div class="bullet-soft bad">${x.sc}: İlk sene yerleşenler yaklaşık <b>${fmt(x.diff)}</b> sıra daha iyi ortalama yakalamış.</div>`).join(''):'<div class="bullet-soft bad">İlk sene avantajı için yeterli ayrışan puan türü sinyali yok.</div>'}
+        <div class="bullet-soft bad">İlk sene yerleşen oranı: <b>%${firstPct}</b> · İlk sene yerleşen: <b>${fmt(fg.first||0)}</b></div>
+      </div>
+    </div>
+    <div class="city-note">📌 <b>Okuma notu:</b> Excel satırlarında öğrencinin tekil mezuniyet durumu olmadığı için puan türü karşılaştırmaları, yıl bazlı İlk Sene / Mezun kart oranları ile o yıl-puan türü ortalama başarı sıralarının ağırlıklandırılmasıyla üretilmiştir.</div>`;
+}
+function renderScoreDecision(el,rows,school){
+  const comps=scoreGraduateComparison(rows,school);
+  el.innerHTML=`<h2 class="center-title">📊 Puan Türü Analizi (2022–2025 Ortalaması)</h2><div class="subnote">Hangi puan türünde ilk sene, hangi puan türünde mezun grubu daha avantajlı görünüyor?</div>
+  <div class="score-advice-grid">${comps.map(x=>{const ilk=x.winner==='ilk'; const no=!x.winner; return `<div class="score-advice-card ${ilk?'win':'lose'}"><h3><span class="pill" style="background:${x.color};color:white">${x.sc}</span></h3><span class="winner-pill" style="background:${no?'#64748b':ilk?'#16a34a':'#f97316'}">${no?'Veri sınırlı':ilk?'İlk sene öğrencileri daha başarılı':'Mezun öğrenciler daha başarılı'}</span><p>${x.sc} puan türünde ${no?'karşılaştırma için yeterli veri yok.':`${ilk?'ilk senesinde yerleşen':'mezuna kalıp yerleşen'} öğrenciler yaklaşık <b>${fmt(x.diff)}</b> sıra daha iyi ortalama yakalamış görünüyor.`}</p><div class="rank-compare"><div><small>İlk sene ort.</small><b>${fmt(x.firstRank)}</b></div><div><small>Mezun ort.</small><b>${fmt(x.gradRank)}</b></div></div></div>`}).join('')}</div>`;
+}
+function renderExtraGradAnalysis(el,rows,school){
+  const fg=school.firstGraduate||{};
+  const first=Number(fg.first)||0, grad=Number(fg.graduate)||0, total=first+grad||1;
+  const firstPct=Math.round(first*1000/total)/10, gradPct=Math.round(grad*1000/total)/10;
+  const cityYear={};
+  rows.forEach(r=>{const y=String(r[0]), val=Number(r[7])||0, inside=norm(r[4]).includes('IZMIR'); cityYear[y]=cityYear[y]||{in:0,out:0,total:0}; cityYear[y][inside?'in':'out']+=val; cityYear[y].total+=val;});
+  let firstIn=0,firstOut=0,gradIn=0,gradOut=0;
+  Object.entries(cityYear).forEach(([y,o])=>{const yy=school.firstGraduate?.byYear?.[y]; const yt=Number(yy?.totalCount)||o.total||1; const fr=(Number(yy?.firstYearCount)||0)/yt; const gr=(Number(yy?.graduateCount)||0)/yt; firstIn+=Math.round(o.in*fr); firstOut+=Math.round(o.out*fr); gradIn+=Math.round(o.in*gr); gradOut+=Math.round(o.out*gr);});
+  const fCityT=firstIn+firstOut||1, gCityT=gradIn+gradOut||1;
+  const uniq=(idx)=>new Set(rows.map(r=>r[idx]).filter(Boolean)).size;
+  const tags={}; rows.forEach(r=>String(r[10]||'').split(/[;,|]/).map(x=>x.trim()).filter(Boolean).forEach(t=>tags[t]=(tags[t]||0)+(Number(r[7])||1)));
+  const topTags=Object.entries(tags).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  el.innerHTML=`<h2 class="center-title">💡 İlk Sene vs Mezun — Ek Analizler</h2><div class="subnote">Dağılım, şehir tercihi ve tercih çeşitliliği birlikte okunur.</div>
+    <div class="extra-analysis-grid">
+      <div class="extra-card"><h3>◔ Mezuniyet Durumu Dağılımı</h3><div class="distribution-row"><div><b>İlk Senede Yerleşenler</b><br><span class="hint">Mezun olduğu yıl yerleşen öğrenciler</span></div><b>${fmt(first)}</b></div><div class="distribution-row"><div><b>Mezuna Kalıp Yerleşenler</b><br><span class="hint">Bir yıl daha hazırlanıp yerleşen öğrenciler</span></div><b>${fmt(grad)}</b></div><div class="split-track"><div class="a" style="width:${firstPct}%"></div><div class="b" style="width:${gradPct}%"></div></div><div class="chart-legend"><span><i class="legend-dot" style="background:#6366f1"></i>İlk Sene: %${firstPct}</span><span><i class="legend-dot" style="background:#10b981"></i>Mezun: %${gradPct}</span></div></div>
+      <div class="extra-card"><h3>📍 Şehir Tercihi Karşılaştırması</h3><p class="hint">İzmir içi / şehir dışı üniversite tercih eğilimi.</p><div class="city-bars"><div class="city-bar-row"><b>İlk Senede Yerleşenler</b><div class="city-track"><div class="city-fill" style="width:${Math.round(firstOut*100/fCityT)}%"></div></div><small>🏠 Şehir içi: ${fmt(firstIn)} · ✈️ Şehir dışı: ${fmt(firstOut)}</small></div><div class="city-bar-row"><b>Mezuna Kalıp Yerleşenler</b><div class="city-track"><div class="city-fill" style="width:${Math.round(gradOut*100/gCityT)}%"></div></div><small>🏠 Şehir içi: ${fmt(gradIn)} · ✈️ Şehir dışı: ${fmt(gradOut)}</small></div></div></div>
+    </div>
+    <div class="extra-card" style="margin-top:18px"><h3>📈 Tercih Çeşitliliği Analizi</h3><div class="diversity-grid"><div class="diversity-box"><b>${fmt(uniq(3))}</b>Üniversite</div><div class="diversity-box"><b>${fmt(uniq(4))}</b>Şehir</div><div class="diversity-box"><b>${fmt(uniq(5))}</b>Program</div><div class="diversity-box"><b>${fmt(rows.length)}</b>Kayıt</div></div>${topTags.length?`<div class="tag-cloud">${topTags.map(([t,v])=>`<span class="tag-chip">${t}: ${fmt(v)}</span>`).join('')}</div>`:''}<p class="analysis-note">Çeşitlilik arttıkça okulun farklı bölüm/şehir/üniversite seçeneklerine yayılımı güçlenir.</p></div>`;
+}
+
+function isBozyakaGroupName(name){let n=norm(name);return n.includes('BOZYAKA SEHIT FETHI BEY')}
+function schoolGroup(schools,current){
+  if(isBozyakaGroupName(current.name)){
+    return schools.filter(x=>isBozyakaGroupName(x.name));
+  }
+  return [current];
+}
+function mergeSchools(list,rows){
+  const canonical=list.find(x=>norm(x.name).includes('ANADOLU LISESI')&&!norm(x.name).includes('COK PROGRAMLI'))||list[0];
+  const years={}, yearScore={}, fgByYear={};
+  rows.forEach(r=>{
+    const y=String(r[0]), sc=r[6]||'—', val=Number(r[7])||0;
+    years[y]=(years[y]||0)+val;
+    yearScore[y]=yearScore[y]||{};
+    yearScore[y][sc]=(yearScore[y][sc]||0)+val;
+  });
+  let first=0, graduate=0, fgTotal=0;
+  list.forEach(s=>{
+    const fg=s.firstGraduate||{};
+    first+=Number(fg.first)||0;
+    graduate+=Number(fg.graduate)||0;
+    fgTotal+=Number(fg.total)||0;
+    Object.entries(fg.byYear||{}).forEach(([y,o])=>{
+      fgByYear[y]=fgByYear[y]||{firstYearCount:0,graduateCount:0,totalCount:0,graduateRate:0};
+      fgByYear[y].firstYearCount+=Number(o.firstYearCount)||0;
+      fgByYear[y].graduateCount+=Number(o.graduateCount)||0;
+      fgByYear[y].totalCount+=Number(o.totalCount)||0;
+    });
+  });
+  Object.values(fgByYear).forEach(o=>{o.graduateRate=o.totalCount?Math.round(o.graduateCount*1000/o.totalCount)/10:0});
+  const total=sumTotal(rows), total2025=sumTotal(rows.filter(r=>String(r[0])==='2025'));
+  return {
+    ...canonical,
+    name:canonical.name,
+    displayName:canonical.name,
+    groupNames:list.map(x=>x.name),
+    groupCount:list.length,
+    records:rows.length,
+    total,
+    total2025,
+    years,
+    yearScore,
+    weightedRank:avgRank(rows),
+    bestRank:bestRank(rows),
+    firstGraduate:{first,graduate,total:fgTotal||first+graduate,firstRate:(fgTotal||first+graduate)?Math.round(first*1000/(fgTotal||first+graduate))/10:0,graduateRate:(fgTotal||first+graduate)?Math.round(graduate*1000/(fgTotal||first+graduate))/10:0,byYear:fgByYear}
+  };
+}
+function relatedList(el,group,current){
+  if(!group || group.length<2){document.getElementById('relatedSection').style.display='none';return}
+  el.innerHTML=`<p class="hint"><b>Bu sayfadaki üst veriler aşağıdaki eski/yeni okul adları birleştirilerek hesaplandı.</b> Okul geçmişinde ad/tür değişimi olduğu için kayıtlar tek okul çatısı altında gösteriliyor.</p><div class="related-grid">${group.map((x,i)=>`<div class="related-card"><h3><a href="okul-detay.html?okul=${encodeURIComponent(x.name)}">${x.name}</a></h3><p>${x.district} · ${x.type||'Lise'} · ${i===0?'Güncel/ana kayıt':'Eski/farklı ad kaydı'}</p><div class="related-stats"><div><b>${fmt(x.total)}</b><br>Tekil toplam</div><div><b>${fmt(x.total2025)}</b><br>2025</div><div><b>${fmt(x.weightedRank)}</b><br>Ağırlıklı sıra</div></div></div>`).join('')}</div>`
+}
+window.selectYearScore=function(year,score){yearSel.value=String(year);scoreSel.value=score;renderMain();filterSection.open=true;filterSection.scrollIntoView({behavior:'smooth',block:'start'});}
+let renderMain=()=>{};
+(async()=>{
+ const [schools,p]=await Promise.all([getJSON('data/schools.json'),getJSON('data/placements-lite.json')]);
+ const name=new URLSearchParams(location.search).get('okul')||'';
+ const selected=schools.find(x=>norm(x.name)===norm(name))||schools[0];
+ const group=schoolGroup(schools,selected);
+ const groupNameSet=new Set(group.map(x=>norm(x.name)));
+ let rows=p.rows.filter(r=>groupNameSet.has(norm(r[2])));
+ const s=mergeSchools(group,rows);
+ title.textContent=s.displayName;
+ sub.textContent=`${s.district} · Birleşik okul çatısı · ${s.groupCount} okul adı kaydı · ${fmt(s.records)} program kaydı`;
+ schoolType.textContent='Eski / yeni okul adı birleşik sonuç';
+ stats.innerHTML=`<div class="fact"><div class="num">${fmt(s.total)}</div><div class="label">Birleşik toplam yerleşen</div></div><div class="fact"><div class="num">${fmt(s.total2025)}</div><div class="label">2025 birleşik yerleşen</div></div><div class="fact"><div class="num">${fmt(s.weightedRank)}</div><div class="label">Birleşik ağırlıklı taban başarı sırası</div></div><div class="fact"><div class="num">%${s.firstGraduate?.firstRate??'—'} / %${s.firstGraduate?.graduateRate??'—'}</div><div class="label">İlk Sene / Mezun</div></div>`;
+ bars(trend,s.years); yearScoreCards(yearScoreCardsEl=document.getElementById('yearScoreCards'),s); fgYearCards(fgYearVisual,s); relatedList(relatedSchools,group,s); devSection(development,rows,s); renderGradDecision(gradDecision,rows,s); renderScoreDecision(scoreDecision,rows,s); renderExtraGradAnalysis(extraGradAnalysis,rows,s);
+ const years=[...new Set(rows.map(r=>r[0]))].sort(); yearSel.innerHTML='<option value="">Tüm yıllar</option>'+years.map(y=>`<option>${y}</option>`).join(''); yearSel.value=years.includes(2025)?'2025':'';
+ scoreSel.innerHTML='<option value="">Tüm puan türleri</option>';
+ [...new Set(rows.map(r=>r[6]).filter(Boolean))].sort().forEach(x=>scoreSel.innerHTML+=`<option>${x}</option>`);
+ renderMain=function(){
+  const y=yearSel.value?+yearSel.value:null, st=scoreSel.value;
+  let v=rows.filter(r=>(!y||r[0]===y)&&(!st||r[6]===st));
+  const total=sumTotal(v), ar=avgRank(v), br=bestRank(v), fg=filteredFg(s,yearSel.value,total);
+  miniMetrics(filterStats,[{k:'Seçili yerleşen',v:fmt(total)},{k:'Ort. taban başarı sırası',v:fmt(ar)},{k:'En iyi taban sırası',v:fmt(br)},{k:'Kayıt sayısı',v:fmt(v.length)}]);
+  scoreBarList(scoreBars,v); fgVisual(filterFg,fg,total);
+  if(sortSel.value==='total')v.sort((a,b)=>(Number(b[7])||0)-(Number(a[7])||0));
+  else v.sort((a,b)=>(Number(a[8])||9e12)-(Number(b[8])||9e12));
+  table(placements,['Sıra','Yıl','Puan','Okul adı kaydı','Üniversite','Şehir','Program','Yerleşen','Taban sıra','Etiket'],v.slice(0,500).map((r,i)=>`<tr><td><b>${i+1}</b></td><td>${r[0]}</td><td><span class="pill">${r[6]||'—'}</span></td><td>${r[2]||'—'}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td><b>${fmt(r[7])}</b></td><td>${r[8]?`<span class="${r[8]<100000?'rank-good':r[8]<500000?'rank-mid':'rank-bad'}">${fmt(r[8])}</span>`:'—'}</td><td>${r[10]||'—'}</td></tr>`));
+ }
+ yearSel.oninput=scoreSel.oninput=sortSel.oninput=renderMain; renderMain();
+})();
+</script>
+</body>
+</html>

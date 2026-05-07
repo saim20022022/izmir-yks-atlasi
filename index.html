@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>İzmir Lise Başarı Atlası</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="top"><div class="nav">
+  <a class="brand" href="index.html">İzmir Lise Başarı Atlası</a>
+  <a href="index.html">Ana Sayfa</a><a href="okullar.html">Okullar</a><a href="ilceler.html">İlçeler</a><a href="lise-turleri.html">Lise Türleri</a><a href="karsilastir.html">Karşılaştır</a><a href="sampiyonlar.html">Şampiyonlar</a><a href="puan-turu-trendleri.html">Puan Türleri</a><a href="universite-haritasi.html">Üniversite Haritası</a><a href="program-populerligi.html">Programlar</a><a href="etiket-analizi.html">Etiketler</a><a href="siralama-araci.html">Sıralama Aracı</a>
+</div></div>
+<main class="wrap">
+  <section class="hero">
+    <div class="panel">
+      <span class="eyebrow">Excel ana kaynak · v10</span>
+      <h1>İzmir Lise Başarı Atlası</h1>
+      <p>2022–2025 yerleşim verileri; ilçe, okul, lise türü ve puan türü kırılımında incelenir.</p>
+      <div class="notice"><b>Toplam yerleşen</b> Excel’deki <b>Toplam</b> sütunundan hesaplanır. İlk Sene / Mezun dağılımı ZIP kart yüzdeleriyle eşleştirilir.</div>
+      <h2 style="margin-top:22px">Okul seç</h2>
+      <div class="school-picker"><select id="pickDistrict"></select><select id="pickSchool"></select><button id="goSchool">Okula git</button></div>
+    </div>
+    <div class="panel">
+      <h2>4 yıllık toplam trend</h2>
+      <div id="yearChart" class="chart colorful-chart"></div>
+    </div>
+  </section>
+
+  <section id="stats" class="grid stats"></section>
+
+  <details class="accordion" open>
+    <summary>Puan türü / yıl kartları</summary>
+    <div class="panel inner score-hero">
+      <p>Önce yılı seç. Altındaki 5 puan türünden birine tıklayınca yalnızca o puan türünün kartı açılır.</p>
+      <div id="yearScoreTabs" class="year-score-tabs"></div>
+      <div id="scoreTypeTabs" class="score-type-tabs"></div>
+      <div id="scoreBreakdown" class="score-breakdown single"></div>
+    </div>
+  </details>
+
+  <details class="accordion" open>
+    <summary>Genel toplam + ilçeler: yıl / puan türü sıralaması</summary>
+    <div class="panel inner">
+      <p>Bu bölüm okul listesi değildir. Seçilen yıl ve puan türüne göre <b>genel toplam</b> ve <b>ilçeler</b> aynı tabloda gösterilir.</p>
+      <div class="toolbar"><select id="distYearSel"></select><select id="distScoreSel"></select><select id="distSortSel"><option value="total">Yerleşen sayısına göre sırala</option><option value="rank">Ortalama taban başarı sırasına göre sırala</option></select></div>
+      <div id="generalCards" class="grid stats"></div>
+      <div id="districtTable" class="table-wrap"></div>
+    </div>
+  </details>
+
+  <details class="accordion" open>
+    <summary>İzmir ilçe haritası</summary>
+    <div class="panel inner">
+      <p>İlçe adına tıklayınca ilçe detay sayfası açılır.</p>
+      <div id="izmirMap" class="map-v10"></div>
+    </div>
+  </details>
+
+  <details class="accordion" open>
+    <summary>Lise türleri</summary>
+    <div class="panel inner">
+      <p>Lise türleri yıl, puan türü, yerleşen sayısı ve ağırlıklı ortalama taban başarı sırasına göre listelenir.</p>
+      <div class="toolbar"><select id="typeYearSel"></select><select id="typeScoreSel"></select><select id="typeSortSel"><option value="total">Yerleşen sayısına göre</option><option value="rank">Ortalama taban başarı sırasına göre</option></select></div>
+      <div id="typeList" class="table-wrap"></div>
+    </div>
+  </details>
+</main>
+<div class="footer">Excel Toplam sütunu esaslı statik web projesi.</div>
+<script src="js/app.js"></script>
+<script>
+(async()=>{
+  const [summary, schools, districts, scoreData, placements, schoolTypes] = await Promise.all([
+    getJSON('data/summary.json'), getJSON('data/schools.json'), getJSON('data/districts.json'), getJSON('data/score-year-cards.json'), getJSON('data/placements-lite.json'), getJSON('data/school-types.json')
+  ]);
+  const colors=['#2563eb','#16a34a','#dc2626','#7c3aed','#ea580c','#0891b2','#be123c','#4f46e5','#0f766e','#ca8a04','#9333ea','#0284c7','#65a30d','#db2777','#475569','#f97316','#14b8a6','#8b5cf6','#ef4444','#22c55e','#06b6d4','#f59e0b','#84cc16','#ec4899','#64748b','#0ea5e9','#a855f7','#10b981','#f43f5e','#6366f1'];
+  const years=[...summary.years,'all'];
+  const scoreTypes=summary.scoreTypes;
+  const schoolTypeByName=Object.fromEntries(schools.map(s=>[s.name, s.type||'Diğer']));
+  const typeRate=Object.fromEntries(schoolTypes.map(t=>[t.type,t.firstGraduate||{}]));
+
+  statCards(stats,[
+    {k:'Toplam yerleşen',v:fmt(summary.totalPlacements)}, {k:'Lise',v:fmt(summary.schoolCount)}, {k:'İlçe',v:fmt(summary.districtCount)}, {k:'Puan türü',v:fmt(scoreTypes.length)}, {k:'Yıl',v:'2022–2025'}
+  ]);
+  barsColor(yearChart, summary.yearTotals);
+  fillSchoolPicker(pickDistrict,pickSchool,schools);
+  goSchool.onclick=()=>{ if(pickSchool.value) location.href='okul-detay.html?okul='+encodeURIComponent(pickSchool.value); };
+
+  function barsColor(el,obj){
+    const e=Object.entries(obj||{}); const max=Math.max(...e.map(x=>+x[1]),1);
+    el.innerHTML=e.map(([y,v],i)=>`<div class="bar color-year-bar" style="height:${Math.max(40,(v/max)*220)}px;--c:${colors[i%colors.length]}"><span>${y}<br>${fmt(v)}</span></div>`).join('');
+  }
+
+  function fillSelect(sel, arr, allLabel){
+    sel.innerHTML=arr.map(x=>`<option value="${x==='all'?'all':x}">${x==='all'?allLabel||'Tüm yıllar':x}</option>`).join('');
+  }
+  [distYearSel,typeYearSel].forEach(s=>fillSelect(s,years,'Tüm yıllar'));
+  [distScoreSel,typeScoreSel].forEach(s=>{s.innerHTML='<option value="">Tüm puan türleri</option>'+scoreTypes.map(x=>`<option>${x}</option>`).join('')});
+  distYearSel.value='all'; typeYearSel.value='all';
+
+  function makeAgg(keyFn){
+    const m={};
+    for(const r of placements.rows){
+      const [year,district,school,,,,score,totalRaw,rankRaw]=r;
+      const total=+totalRaw||0, rank=+rankRaw||0, type=schoolTypeByName[school]||'Diğer';
+      const variants=[
+        {year:String(year),score,district,school,type}, {year:'all',score,district,school,type},
+        {year:String(year),score:'',district,school,type}, {year:'all',score:'',district,school,type}
+      ];
+      for(const o of variants){
+        const k=keyFn(o); if(!m[k]) m[k]={total:0,rankNum:0,rankDen:0,schools:new Set()};
+        m[k].total+=total; if(rank&&total){m[k].rankNum+=rank*total; m[k].rankDen+=total} m[k].schools.add(school);
+      }
+    }
+    return m;
+  }
+  const districtAgg=makeAgg(o=>`${o.district}|${o.year}|${o.score}`);
+  const typeAgg=makeAgg(o=>`${o.type}|${o.year}|${o.score}`);
+  function agg(m,k){const x=m[k]||{total:0,rankNum:0,rankDen:0,schools:new Set()}; return {total:x.total, weightedRank:x.rankDen?Math.round(x.rankNum/x.rankDen):null, schoolCount:x.schools.size};}
+  function estimateFG(rate,total){const fr=rate?.firstRate ?? rate?.first ?? null; const gr=rate?.graduateRate ?? rate?.graduate ?? null; if(fr==null||gr==null) return {first:null,graduate:null,firstRate:null,graduateRate:null}; return {first:Math.round(total*fr/100),graduate:Math.round(total*gr/100),firstRate:fr,graduateRate:gr};}
+
+  let selectedYear='all', selectedScore=scoreTypes[0];
+  yearScoreTabs.innerHTML=years.map((y,i)=>`<button class="year-score-card" data-y="${y}" style="--c:${colors[i%colors.length]}">${y==='all'?'Tüm yıllar':y}</button>`).join('');
+  function renderScoreButtons(){scoreTypeTabs.innerHTML=scoreTypes.map((s,i)=>`<button class="score-type-tab ${s===selectedScore?'active':''}" data-s="${s}" style="--c:${colors[i%colors.length]}">${s}</button>`).join('');}
+  function scoreRow(y,st){
+    if(y==='all'){
+      const arr=scoreData.filter(x=>x.scoreType===st); const total=arr.reduce((a,b)=>a+(b.total||0),0); const first=arr.reduce((a,b)=>a+(b.first||0),0); const graduate=arr.reduce((a,b)=>a+(b.graduate||0),0); const wr=Math.round(arr.reduce((a,b)=>a+(b.weightedRank||0)*(b.total||0),0)/Math.max(1,total));
+      return {year:'Tüm yıllar',scoreType:st,total,first,graduate,weightedRank:wr};
+    }
+    return scoreData.find(x=>String(x.year)===String(y)&&x.scoreType===st) || {year:y,scoreType:st,total:0,first:0,graduate:0,weightedRank:null};
+  }
+  function renderScoreCard(){
+    document.querySelectorAll('.year-score-card').forEach(b=>b.classList.toggle('active',b.dataset.y===String(selectedYear)));
+    renderScoreButtons();
+    const x=scoreRow(selectedYear,selectedScore); const idx=scoreTypes.indexOf(selectedScore); const c=colors[idx%colors.length];
+    const fg=(x.first||0)+(x.graduate||0); const fr=fg?Math.round((x.first||0)*1000/fg)/10:0; const gr=fg?Math.round((x.graduate||0)*1000/fg)/10:0; const max=Math.max(x.first||0,x.graduate||0,1);
+    scoreBreakdown.innerHTML=`<div class="score-type-card selected-score-card wide-score-card" style="--c:${c}">
+      <div class="score-card-head"><span class="eyebrow">${x.scoreType}</span><h3>${x.year}</h3><div class="big">${fmt(x.total)}</div><div class="mini">Toplam yerleşen</div><div class="rank-chip">Ort. taban başarı sırası: <b>${fmt(x.weightedRank)}</b></div></div>
+      <div class="score-visuals"><div class="pie" style="background:conic-gradient(var(--c) 0 ${fr}%, #cbd5e1 ${fr}% 100%)"><span>%${fr}<br>İlk</span></div><div class="mini-bars side-bars"><div style="height:${Math.max(12,(x.first||0)/max*130)}px;background:var(--c)"><span>İlk<br>${fmt(x.first)}</span></div><div style="height:${Math.max(12,(x.graduate||0)/max*130)}px;background:#94a3b8"><span>Mezun<br>${fmt(x.graduate)}</span></div></div></div>
+      <div class="mini score-note">İlk Sene: ${fmt(x.first)} · Mezun: ${fmt(x.graduate)} · %${fr} / %${gr}</div>
+    </div>`;
+  }
+  yearScoreTabs.onclick=e=>{const b=e.target.closest('button[data-y]'); if(!b) return; selectedYear=b.dataset.y; renderScoreCard();};
+  scoreTypeTabs.onclick=e=>{const b=e.target.closest('button[data-s]'); if(!b) return; selectedScore=b.dataset.s; renderScoreCard();};
+  renderScoreCard();
+
+  function tableBar(value,max,color){const w=max?Math.max(2,Math.round(value/max*100)):0; return `<div class="table-bar"><i style="width:${w}%;background:${color}"></i><b>${fmt(value)}</b></div>`;}
+  function rankBar(value,min,max,color){if(!value)return '<div class="table-bar muted"><b>—</b></div>'; const w=max>min?Math.max(2,Math.round((max-value)/(max-min)*100)):100; return `<div class="table-bar"><i style="width:${w}%;background:${color}"></i><b>${fmt(value)}</b></div>`;}
+  function renderDistricts(){
+    const y=distYearSel.value, st=distScoreSel.value, sort=distSortSel.value;
+    let arr=districts.map((d,i)=>{const a=agg(districtAgg,`${d.name}|${y}|${st}`); const fg=estimateFG(d.firstGraduate,a.total); return {...a,...fg,name:d.name,schoolCount:a.schoolCount||d.schoolCount,color:colors[i%colors.length],href:'ilce-detay.html?ilce='+encodeURIComponent(d.name)};}).filter(x=>x.total>0);
+    const byTotal=[...arr].sort((a,b)=>b.total-a.total); byTotal.forEach((x,i)=>x.totalOrder=i+1);
+    const byRank=[...arr].filter(x=>x.weightedRank).sort((a,b)=>a.weightedRank-b.weightedRank); byRank.forEach((x,i)=>x.rankOrder=i+1);
+    arr.sort(sort==='rank'?(a,b)=>(a.weightedRank||999999999)-(b.weightedRank||999999999):(a,b)=>b.total-a.total);
+    const genTotal=arr.reduce((a,b)=>a+b.total,0), genFirst=arr.reduce((a,b)=>a+(b.first||0),0), genGrad=arr.reduce((a,b)=>a+(b.graduate||0),0), genRank=Math.round(arr.reduce((a,b)=>a+(b.weightedRank||0)*b.total,0)/Math.max(1,genTotal));
+    generalCards.innerHTML=`<div class="card stat"><div class="num">${fmt(genTotal)}</div><div class="label">Seçili toplam yerleşen</div></div><div class="card stat"><div class="num">${fmt(genRank)}</div><div class="label">Ort. taban başarı sırası</div></div><div class="card stat"><div class="num">${fmt(genFirst)}</div><div class="label">İlk Sene</div></div><div class="card stat"><div class="num">${fmt(genGrad)}</div><div class="label">Mezun</div></div>`;
+    const maxTotal=Math.max(...arr.map(x=>x.total),1); const ranks=arr.map(x=>x.weightedRank).filter(Boolean); const minR=Math.min(...ranks,1), maxR=Math.max(...ranks,1);
+    const rows=[`<tr class="general-row"><td>Genel toplam</td><td>—</td><td>—</td><td>${tableBar(genTotal,maxTotal,'#0f172a')}</td><td>—</td><td>${rankBar(genRank,minR,maxR,'#0f172a')}</td><td>${fmt(genFirst)}</td><td>${fmt(genGrad)}</td></tr>`, ...arr.map((x,i)=>`<tr><td><a class="pill" href="${x.href}">${x.name}</a></td><td>${fmt(x.schoolCount)}</td><td>${x.totalOrder||'—'}</td><td>${tableBar(x.total,maxTotal,x.color)}</td><td>${x.rankOrder||'—'}</td><td>${rankBar(x.weightedRank,minR,maxR,x.color)}</td><td>${fmt(x.first)}</td><td>${fmt(x.graduate)}</td></tr>`)];
+    table(districtTable,['İlçe','Okul','Yerleşen sıra','Yerleşen sayısı','Başarı sırası sırası','Ort. taban başarı sırası','İlk Sene','Mezun'],rows);
+  }
+  distYearSel.onchange=renderDistricts; distScoreSel.onchange=renderDistricts; distSortSel.onchange=renderDistricts; renderDistricts();
+
+  function renderMap(){
+    izmirMap.innerHTML=districts.slice().sort((a,b)=>a.name.localeCompare(b.name,'tr')).map((d,i)=>`<a class="district-tile" style="background:linear-gradient(135deg,${colors[i%colors.length]},#0f172a)" href="ilce-detay.html?ilce=${encodeURIComponent(d.name)}"><b>${d.name}</b><small>${fmt(d.total)} yerleşen</small></a>`).join('');
+  }
+  renderMap();
+
+  function renderTypes(){
+    const y=typeYearSel.value, st=typeScoreSel.value, sort=typeSortSel.value;
+    let arr=schoolTypes.map((t,i)=>{const a=agg(typeAgg,`${t.type}|${y}|${st}`); const fg=estimateFG(t.firstGraduate,a.total); return {...a,...fg,type:t.type,schoolCount:a.schoolCount||t.schoolCount,color:colors[i%colors.length]};}).filter(x=>x.total>0);
+    const byTotal=[...arr].sort((a,b)=>b.total-a.total); byTotal.forEach((x,i)=>x.totalOrder=i+1);
+    const byRank=[...arr].filter(x=>x.weightedRank).sort((a,b)=>a.weightedRank-b.weightedRank); byRank.forEach((x,i)=>x.rankOrder=i+1);
+    arr.sort(sort==='rank'?(a,b)=>(a.weightedRank||999999999)-(b.weightedRank||999999999):(a,b)=>b.total-a.total);
+    const maxTotal=Math.max(...arr.map(x=>x.total),1); const ranks=arr.map(x=>x.weightedRank).filter(Boolean); const minR=Math.min(...ranks,1), maxR=Math.max(...ranks,1);
+    const rows=arr.map(x=>`<tr><td>${x.type}</td><td>${fmt(x.schoolCount)}</td><td>${x.totalOrder}</td><td>${tableBar(x.total,maxTotal,x.color)}</td><td>${x.rankOrder||'—'}</td><td>${rankBar(x.weightedRank,minR,maxR,x.color)}</td><td>${fmt(x.first)}</td><td>${fmt(x.graduate)}</td></tr>`);
+    table(typeList,['Lise türü','Okul','Yerleşen sıra','Yerleşen sayısı','Başarı sırası sırası','Ort. taban başarı sırası','İlk Sene','Mezun'],rows);
+  }
+  typeYearSel.onchange=renderTypes; typeScoreSel.onchange=renderTypes; typeSortSel.onchange=renderTypes; renderTypes();
+})();
+</script>
+</body>
+</html>
